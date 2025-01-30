@@ -1,0 +1,68 @@
+Ejecutar BWA en WIndows
+
+BWA es un programa de Linux, por lo que hay que instalar un programa que replique el código de linux para poder ejecutar BWA
+
+1. Instalar WL2: este programa simula linux dentro de windows, pero no es un ordenador virtual, sólo es la consola. 
+Abrir Windows Powershell y ejecutar los siguientes comandos.
+
+wsl --install
+wsl --update
+
+Abrir WSL (está en el buscador una vez instalado) y ejecutar estos comandos para instalar BWA. Quizás en algún momento te pide que crees usuario y contraseña 
+
+sudo apt install bwa
+bwa (este comando sirve para verificar que se ha instalado, te debe salir una lista de comandos de ayuda)
+sudo apt install samtools
+samtools
+sudo apt install gnuplot
+gnuplot
+
+Transformar comando versión linux a WSL. El comando del script del aula virtual hay que adaptarlo a WSL.
+
+1. El archivo yeast.fasta hay que localizarlo en la carpeta en la que está. Para ello, abres el explorador de archivos y vas hasta la carpeta, clicas en propiedades
+y copias la ruta. A mí se me ha quedado así: C:\Users\10cas\Documents\Biotecnología\4º curso\2º Cuatrimestre\Bioinformática\Prácticas\Tema 2\T02_secuencias\data
+Ahora le añades el nombre del archivo al final de la ruta: \yeast.fasta, así que quedaría:
+C:\Users\10cas\Documents\Biotecnología\4º curso\2º Cuatrimestre\Bioinformática\Prácticas\Tema 2\T02_secuencias\data\yeast.fasta
+
+Ahora hay que convertir la ruta en lenguaje windows a lenguaje entendible por WSL, yo he usado una IA (deepseek) porque hay que cambiar las barras, así que la ruta 
+transformada a WSL sería:
+
+/mnt/c/Users/10cas/Documents/Biotecnología/4º curso/2º Cuatrimestre/Bioinformática/Prácticas/Tema 2/T02_secuencias/data/yeast.fasta
+
+Ahora abres Rstudio y pones los siguientes comandos:
+
+ruta_wsl <- '" tu ruta "' #Se ponen las tres comillas porque sino no va
+comando <- paste("bwa index", ruta_wsl)
+system2("wsl", comando) #El system2 es para que utilize WSL
+
+Para la siguiente parte, el fundamento es el mismo, adaptar las rutas de los archivos a WSL y adaptar el comando de linux a WSL:
+
+ruta_fasta <- '"/mnt/c/Users/10cas/Documents/Biotecnología/4º curso/2º Cuatrimestre/Bioinformática/Prácticas/Tema 2/T02_secuencias/data/yeast.fasta"'
+ruta_fastq <- '"/mnt/c/Users/10cas/Documents/Biotecnología/4º curso/2º Cuatrimestre/Bioinformática/Prácticas/Tema 2/T02_secuencias/data/yeast.fastq.gz"'
+ruta_sam <- '"/mnt/c/Users/10cas/Documents/Biotecnología/4º curso/2º Cuatrimestre/Bioinformática/Prácticas/Tema 2/T02_secuencias/data/yeast.sam"'
+
+comando <- paste("bwa mem", ruta_fasta, ruta_fastq, "-o", ruta_sam)
+system2("wsl", comando)
+
+Siguiente parte:
+
+ruta_sam <- '"/mnt/c/Users/10cas/Documents/Biotecnología/4º curso/2º Cuatrimestre/Bioinformática/Prácticas/Tema 2/T02_secuencias/data/yeast.sam"'
+ruta_bam <- '"/mnt/c/Users/10cas/Documents/Biotecnología/4º curso/2º Cuatrimestre/Bioinformática/Prácticas/Tema 2/T02_secuencias/data/yeast.bam"'
+ruta_sorted_bam <- '"/mnt/c/Users/10cas/Documents/Biotecnología/4º curso/2º Cuatrimestre/Bioinformática/Prácticas/Tema 2/T02_secuencias/data/sorted.bam"'
+
+comando2 <- paste("samtools view -b -o", ruta_bam, ruta_sam)
+comando3 <- paste("samtools sort -o", ruta_sorted_bam, ruta_bam)
+comando4 <- paste("samtools index", ruta_sorted_bam)
+
+system2("wsl", comando2)
+system2("wsl", comando3)
+system2("wsl", comando4)
+
+
+
+
+
+
+
+
+
